@@ -21,7 +21,6 @@ final class ImagesListCell: UITableViewCell {
     //MARK: - lificycle
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientView.backgroundColor = .clear
         addGradientToGradientView()
     }
     //MARK: - Private properties
