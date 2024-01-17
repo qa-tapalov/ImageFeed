@@ -13,12 +13,6 @@ class ImagesListViewController: UIViewController {
     
     //MARK: - Private properties
     private let photosName: [String] = Array(0..<20).map{"\($0)"}
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +24,7 @@ class ImagesListViewController: UIViewController {
         guard let imageCell = UIImage(named: imageName) else {return}
         cell.imageCell.image = imageCell
         let date = Date()
-        cell.dateLabel.text = dateFormatter.string(from: date)
+        cell.dateLabel.text = date.dateFormat
         let likeImage: UIImage!
         
         if indexPath.row % 2 == 0 {
@@ -55,7 +49,7 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell()
         }
-        
+        cell.selectionStyle = .none
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
