@@ -13,27 +13,14 @@ class ImagesListViewController: UIViewController {
     
     //MARK: - Private properties
     private let photosName: [String] = Array(0..<20).map{"\($0)"}
+    private let imagesListCell = ImagesListCell()
+    
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
     
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let imageName = String(indexPath.row)
-        guard let imageCell = UIImage(named: imageName) else {return}
-        cell.imageCell.image = imageCell
-        let date = Date()
-        cell.dateLabel.text = date.dateFormat
-        let likeImage: UIImage!
-        
-        if indexPath.row % 2 == 0 {
-            likeImage = UIImage(named: "likeActive")
-        } else {
-            likeImage = UIImage(named: "likeNoActive")
-        }
-        cell.likeButton.setImage(likeImage, for: .normal)
-    }
 }
 
 //MARK: - UITableViewDataSource
@@ -50,7 +37,7 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        configCell(for: imageListCell, with: indexPath)
+        imagesListCell.configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
 }
