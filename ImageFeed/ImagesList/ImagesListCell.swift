@@ -32,7 +32,6 @@ final class ImagesListCell: UITableViewCell {
         gradientLayer.locations = [0, 1]
         gradientLayer.frame = gradientView.bounds
         gradientView.layer.addSublayer(gradientLayer)
-        
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
