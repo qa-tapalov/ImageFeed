@@ -138,15 +138,17 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkd-gH-p8D">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="414" placeholderIntrinsicHeight="414" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="PsA-It-Zph">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="PsA-It-Zph">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                     </imageView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="PsA-It-Zph" secondAttribute="bottom" id="QEs-7a-3P2"/>
-                                    <constraint firstItem="PsA-It-Zph" firstAttribute="top" secondItem="gkd-gH-p8D" secondAttribute="top" id="YXk-MU-Gd2"/>
-                                    <constraint firstItem="PsA-It-Zph" firstAttribute="leading" secondItem="gkd-gH-p8D" secondAttribute="leading" id="d00-06-U6t"/>
-                                    <constraint firstAttribute="trailing" secondItem="PsA-It-Zph" secondAttribute="trailing" id="tJ3-29-qFY"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="trailing" secondItem="hzH-ab-KZt" secondAttribute="trailing" id="FLv-2x-YhB"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="leading" secondItem="hzH-ab-KZt" secondAttribute="leading" id="Q8J-Nh-dca"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="bottom" secondItem="hzH-ab-KZt" secondAttribute="bottom" id="ec6-Gk-Mfz"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="top" secondItem="hzH-ab-KZt" secondAttribute="top" id="mXJ-B1-fc4"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="height" secondItem="shs-d4-4xE" secondAttribute="height" id="wUQ-7l-WsU"/>
+                                    <constraint firstItem="PsA-It-Zph" firstAttribute="width" secondItem="shs-d4-4xE" secondAttribute="width" id="xMy-tm-17Q"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="hzH-ab-KZt"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="shs-d4-4xE"/>
