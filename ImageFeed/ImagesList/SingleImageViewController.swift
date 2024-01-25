@@ -15,20 +15,23 @@ class SingleImageViewController: UIViewController {
             imageView.image = image
         }
     }
+    
     //MARK: - Outlets
     @IBOutlet var imageView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
+    
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image
         setupScrollView()
     }
+    
     //MARK: - Actions
     @IBAction func didTapBackButton(_ sender: Any) {
-        
         dismiss(animated: true, completion: nil)
     }
+    
     @IBAction func didTapShareButton(_ sender: Any) {
         
         guard let image = imageView.image else {return}
@@ -45,7 +48,6 @@ class SingleImageViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
     }
-   
 }
 
 //MARK: - UIScrollViewDelegate

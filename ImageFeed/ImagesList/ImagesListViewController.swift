@@ -31,7 +31,6 @@ class ImagesListViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
-    
 }
 
 //MARK: - UITableViewDataSource
