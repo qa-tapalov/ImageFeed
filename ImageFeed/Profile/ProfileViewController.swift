@@ -10,13 +10,13 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     //MARK: - Private Properties
-    private let userAvatar: UIImageView = {
+    private lazy var userAvatar: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(resource: .userpickPhoto)
         return view
     }()
     
-    private let userName: UILabel = {
+    private lazy var userName: UILabel = {
         let view = UILabel()
         view.text = "Екатерина Новикова"
         view.font = UIFont.systemFont(ofSize: 23, weight: .bold)
@@ -25,7 +25,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private let userEmail: UILabel = {
+    private lazy var userEmail: UILabel = {
         let view = UILabel()
         view.text = "@ekaterina_nov"
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -33,7 +33,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private let userDescription: UILabel = {
+    private lazy var userDescription: UILabel = {
         let view = UILabel()
         view.text = "IOS Developer"
         view.numberOfLines = 10
@@ -43,14 +43,14 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private let logoutButton: UIButton = {
+    private lazy var logoutButton: UIButton = {
         let view = UIButton()
         view.setImage(.logoutButton, for: .normal)
         view.tintColor = UIColor.red
         return view
     }()
     
-    private let hStack: UIStackView = {
+    private lazy var hStack: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         view.alignment = .center
@@ -58,7 +58,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private let vStack: UIStackView = {
+    private lazy var vStack: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.alignment = .leading
