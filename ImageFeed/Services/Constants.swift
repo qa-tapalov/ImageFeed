@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+final class Constants {
+    static let appId = "561502"
+    static let accessKey = "tdhj5eEkvMzTWFFJOtv3dTFP-fbjdp6DB9jw-CG25cY"
+    static let secretKey = "MWSB9yECW-_Dz47_Stojyw16yEYEleYX7_MT8dxcfhs"
+    static let redirectUri = "urn:ietf:wg:oauth:2.0:oob"
+    static let accessScope = "public+read_user+write_likes"
+    static let defaultBaseUrl = "https://api.unsplash.com"
+    
+}
+
+
