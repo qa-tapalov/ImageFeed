@@ -46,7 +46,6 @@ final class WebViewViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         createAuthUrl()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,10 +56,11 @@ final class WebViewViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        webView.removeObserver(self, 
+        webView.removeObserver(self,
                                forKeyPath: #keyPath(WKWebView.estimatedProgress),
                                context: nil)
     }
+    
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
@@ -86,8 +86,8 @@ final class WebViewViewController: UIViewController {
         webView.load(request)
     }
     
-   
-
+    
+    
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
@@ -98,7 +98,8 @@ final class WebViewViewController: UIViewController {
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.topAnchor.constraint(equalTo: view.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
         ])
     }
     
@@ -136,17 +137,15 @@ final class WebViewViewController: UIViewController {
     
     @objc func tapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
-        print("tapped")
     }
 }
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
-            //TODO:
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
         } else {
-            
             decisionHandler(.allow)
         }
     }
@@ -167,3 +166,4 @@ extension WebViewViewController: WKNavigationDelegate {
     
     
 }
+

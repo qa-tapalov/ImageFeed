@@ -7,9 +7,13 @@
 
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
+}
+
 final class AuthViewController: UIViewController {
     
-    var delegate: WebViewViewControllerDelegate?
+    var delegate: AuthViewControllerDelegate?
     
     private lazy var authScreenLogo: UIImageView = {
         let view = UIImageView()
@@ -67,15 +71,17 @@ final class AuthViewController: UIViewController {
     }
     
     @objc func didTapButton() {
-        let vc = WebViewViewController()
-        vc.modalPresentationStyle = .fullScreen
-        vc.delegate = self
-        present(vc, animated: true, completion: nil)
+        let viewController = WebViewViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        viewController.delegate = self
+        present(viewController, animated: true, completion: nil)
     }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
+    
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        delegate?.authViewController(self, didAuthenticateWithCode: code)
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
