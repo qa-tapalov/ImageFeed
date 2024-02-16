@@ -18,7 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="GeA-R2-uti"/>
-                        <color key="backgroundColor" name="YP Black"/>
                     </view>
                     <navigationItem key="navigationItem" id="wEl-qG-qE3"/>
                 </viewController>
@@ -134,7 +133,7 @@
                             <constraint firstAttribute="trailing" secondItem="kiL-Up-Aev" secondAttribute="trailing" id="pgN-sr-UDd"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" image="tab_editorial_active" id="hVf-vJ-Fnd"/>
+                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="hVf-vJ-Fnd"/>
                     <navigationItem key="navigationItem" id="d0X-Iy-QLW"/>
                     <connections>
                         <outlet property="tableView" destination="kiL-Up-Aev" id="GOb-Xt-Y5D"/>

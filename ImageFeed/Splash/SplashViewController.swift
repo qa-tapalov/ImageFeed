@@ -46,7 +46,7 @@ final class SplashViewController: UIViewController{
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         
-        let tabBarController = storyboard?.instantiateViewController(identifier: "TabBar") as! UITabBarController
+        guard let tabBarController = storyboard?.instantiateViewController(identifier: "TabBar") as? UITabBarController else {return}
         window.rootViewController = tabBarController
     }
     
@@ -66,6 +66,8 @@ extension SplashViewController: AuthViewControllerDelegate {
         vc.dismiss(animated: true) { [weak self] in
             
             guard let self = self else { return }
+            
+            self.viewController.activityIndicatorAnimating()
             self.fetchAuthToken(code: code)
         }
     }
@@ -78,7 +80,9 @@ extension SplashViewController: AuthViewControllerDelegate {
                 switch result {
                 case .success(let token):
                     OAuth2TokenStorage.shared.saveToken(token)
+                    self.viewController.activityIndicatorAnimatingStop()
                     self.switchToTabBarController()
+                    
                 case .failure(let error):
                     print(error.localizedDescription)
                 }

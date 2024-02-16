@@ -15,6 +15,8 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     let url = "https://unsplash.com/oauth/token"
+    private let decoder = JSONDecoder()
+    private init() {}
     
     func fetchAuthToken(_ code: String, complition: @escaping (Result<String, Error>) -> Void){
         let parameters: [String: Any] = ["client_id": Constants.accessKey,
@@ -47,10 +49,11 @@ final class OAuth2Service {
                 return complition(.failure(NetworkError.codeError))
             }
             
+            self.decoder.keyDecodingStrategy = .convertFromSnakeCase
             guard let data = data else { return }
             
             do {
-                let result = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                let result = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
                 complition(.success(result.accessToken))
             } catch {
                 complition(.failure(error))

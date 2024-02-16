@@ -12,7 +12,7 @@ final class OAuth2TokenStorage {
     static let shared = OAuth2TokenStorage()
     private let userDefaults = UserDefaults.standard
     private let tokenKey = "BearerToken"
-    var token: String? {
+    private var token: String? {
         get {
             userDefaults.string(forKey: tokenKey)
         }
@@ -20,6 +20,8 @@ final class OAuth2TokenStorage {
             userDefaults.set(newValue, forKey: tokenKey)
         }
     }
+    
+    private init(){}
     
     func saveToken(_ token: String) {
         self.token = token

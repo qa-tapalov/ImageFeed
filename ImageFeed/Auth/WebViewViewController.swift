@@ -8,7 +8,6 @@
 import UIKit
 import WebKit
 
-
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
@@ -74,14 +73,14 @@ final class WebViewViewController: UIViewController {
         }
     }
     private func createAuthUrl(){
-        var urlComponents = URLComponents(string: authorizeURLString)!
+        guard var urlComponents = URLComponents(string: authorizeURLString) else {return}
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: Constants.accessKey),
             URLQueryItem(name: "redirect_uri", value: Constants.redirectUri),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: Constants.accessScope)
         ]
-        let url = urlComponents.url!
+        guard let url = urlComponents.url else {return}
         let request = URLRequest(url: url)
         webView.load(request)
     }
@@ -89,7 +88,7 @@ final class WebViewViewController: UIViewController {
     
     
     private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
+        progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     

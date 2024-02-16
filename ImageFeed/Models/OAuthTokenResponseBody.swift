@@ -7,16 +7,7 @@
 
 import Foundation
 
-struct OAuthTokenResponseBody: Codable {
+struct OAuthTokenResponseBody: Decodable {
     let accessToken, tokenType, scope, username: String
     let createdAt, userId: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case tokenType = "token_type"
-        case scope
-        case createdAt = "created_at"
-        case userId = "user_id"
-        case username
-    }
 }
