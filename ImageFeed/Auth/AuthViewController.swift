@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import ProgressHUD
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
 }
@@ -35,26 +35,9 @@ final class AuthViewController: UIViewController {
         return view
     }()
     
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView()
-        view.style = .medium
-        view.color = .white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private lazy var viewDisabled: UIView = {
-        let view = UIView()
-        view.backgroundColor = .gray
-        view.alpha = 0.4
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        viewDisabled.isHidden = true
     }
     
     private func setupConstraintsAuthScreenLogo(){
@@ -74,43 +57,13 @@ final class AuthViewController: UIViewController {
             buttonLogIn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
         ])
     }
-    
-    private func setupConstraintsActivityIndicator(){
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
-    
-    private func setupConstraitViewDisabled(){
-        NSLayoutConstraint.activate([
-            viewDisabled.topAnchor.constraint(equalTo: view.topAnchor),
-            viewDisabled.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            viewDisabled.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewDisabled.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-    }
-    
-    func activityIndicatorAnimating(){
-        viewDisabled.isHidden = false
-        activityIndicator.startAnimating()
-    }
-    
-    func activityIndicatorAnimatingStop(){
-        viewDisabled.isHidden = true
-        activityIndicator.stopAnimating()
-    }
-    
+
     private func setupViews(){
         view.backgroundColor = .ypBlack
         view.addSubview(authScreenLogo)
         view.addSubview(buttonLogIn)
-        view.addSubview(viewDisabled)
-        view.addSubview(activityIndicator)
         setupConstraintsAuthScreenLogo()
         setupConstraintsButtonLogIn()
-        setupConstraintsActivityIndicator()
-        setupConstraitViewDisabled()
         setupButtonAction()
     }
     

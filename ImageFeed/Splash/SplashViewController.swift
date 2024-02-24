@@ -6,11 +6,11 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class SplashViewController: UIViewController{
     
     let viewController = AuthViewController()
-    
     private var window: UIWindow!
     
     private lazy var launchLogo: UIImageView = {
@@ -57,17 +57,18 @@ final class SplashViewController: UIViewController{
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
             window.rootViewController = viewController
         }
-        
     }
+    
+    
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
         vc.dismiss(animated: true) { [weak self] in
             
             guard let self = self else { return }
             
-            self.viewController.activityIndicatorAnimating()
             self.fetchAuthToken(code: code)
         }
     }
@@ -80,7 +81,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                 switch result {
                 case .success(let token):
                     OAuth2TokenStorage.shared.saveToken(token)
-                    self.viewController.activityIndicatorAnimatingStop()
+                    UIBlockingProgressHUD.dismiss()
                     self.switchToTabBarController()
                     
                 case .failure(let error):
