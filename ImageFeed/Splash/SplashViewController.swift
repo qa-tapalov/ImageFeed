@@ -10,7 +10,9 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController{
     
-    let viewController = AuthViewController()
+    private let viewController = AuthViewController()
+    private let profileService = ProfileService.shared
+    private let storage = OAuth2TokenStorage.shared
     private var window: UIWindow!
     
     private lazy var launchLogo: UIImageView = {
@@ -52,14 +54,14 @@ final class SplashViewController: UIViewController{
     
     private func checkAuthorization(){
         if OAuth2TokenStorage.shared.hasToken() {
+            guard let token = storage.token else {return}
+            self.fetchProfile(token: token)
             switchToTabBarController()
         } else {
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
             window.rootViewController = viewController
         }
     }
-    
-    
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
@@ -78,13 +80,31 @@ extension SplashViewController: AuthViewControllerDelegate {
             
             guard let self = self else {return}
             DispatchQueue.main.async {
+                
                 switch result {
                 case .success(let token):
-                    OAuth2TokenStorage.shared.saveToken(token)
-                    UIBlockingProgressHUD.dismiss()
-                    self.switchToTabBarController()
+                    self.storage.saveToken(token)
+                    guard let token = self.storage.token else {return}
+                    self.fetchProfile(token: token)
                     
                 case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    func fetchProfile(token: String) {
+        profileService.fetchProfile(token: token) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else {return}
+                
+                switch result {
+                case .success(_):
+                    UIBlockingProgressHUD.dismiss()
+                    self.switchToTabBarController()
+                case .failure(let error):
+                    UIBlockingProgressHUD.dismiss()
                     print(error.localizedDescription)
                 }
             }

@@ -18,16 +18,14 @@ final class ProfileViewController: UIViewController {
     
     private lazy var userName: UILabel = {
         let view = UILabel()
-        view.text = "Екатерина Новикова"
         view.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         view.numberOfLines = 0
         view.textColor = UIColor.ypWhite
         return view
     }()
     
-    private lazy var userEmail: UILabel = {
+    private lazy var loginName: UILabel = {
         let view = UILabel()
-        view.text = "@ekaterina_nov"
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         view.textColor = UIColor.ypGray
         return view
@@ -35,7 +33,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var userDescription: UILabel = {
         let view = UILabel()
-        view.text = "IOS Developer"
         view.numberOfLines = 10
         view.textAlignment = .justified
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -82,7 +79,7 @@ final class ProfileViewController: UIViewController {
     private func setupVerticalStackView(){
         vStack.addArrangedSubview(hStack)
         vStack.addArrangedSubview(userName)
-        vStack.addArrangedSubview(userEmail)
+        vStack.addArrangedSubview(loginName)
         vStack.addArrangedSubview(userDescription)
         vStack.translatesAutoresizingMaskIntoConstraints = false
         
@@ -106,5 +103,15 @@ final class ProfileViewController: UIViewController {
         setupHorizontalStackView()
         setupVerticalStackView()
         setupConstraits()
+        updateLabel()
+    }
+}
+
+extension ProfileViewController {
+    private func updateLabel(){
+        guard let profile = ProfileService.shared.profileModel else {return}
+        userName.text = profile.nameLabel
+        loginName.text = profile.loginNameLabel
+        userDescription.text = profile.descriptionLabel
     }
 }
