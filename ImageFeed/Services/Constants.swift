@@ -14,7 +14,10 @@ final class Constants {
     static let redirectUri = "urn:ietf:wg:oauth:2.0:oob"
     static let accessScope = "public+read_user+write_likes"
     static let defaultBaseUrl = "https://api.unsplash.com"
-    
+    static let authorizeURLString = "https://unsplash.com/oauth/authorize"
+    static let urlFetchToken = "https://unsplash.com/oauth/token"
+    static let urlGETProfile = Constants.defaultBaseUrl + "/me"
+    static let urlGETUserInfo = Constants.defaultBaseUrl + "/users/"
 }
 
 

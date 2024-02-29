@@ -63,10 +63,22 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        profileImageServiceObserver = NotificationCenter.default    // 2
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     //MARK: - Private methods
@@ -111,7 +123,15 @@ extension ProfileViewController {
     private func updateLabel(){
         guard let profile = ProfileService.shared.profileModel else {return}
         userName.text = profile.nameLabel
-        loginName.text = profile.loginNameLabel
+        loginName.text = "@" + profile.loginNameLabel
         userDescription.text = profile.descriptionLabel
+    }
+    
+    private func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
     }
 }

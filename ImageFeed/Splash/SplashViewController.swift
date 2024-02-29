@@ -79,35 +79,63 @@ extension SplashViewController: AuthViewControllerDelegate {
         OAuth2Service.shared.fetchAuthToken(code) { [weak self] result in
             
             guard let self = self else {return}
-            DispatchQueue.main.async {
-                
-                switch result {
-                case .success(let token):
-                    self.storage.saveToken(token)
-                    guard let token = self.storage.token else {return}
-                    self.fetchProfile(token: token)
-                    
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
+            
+            switch result {
+            case .success(let token):
+                self.storage.saveToken(token)
+                self.fetchProfile(token: token)
+            case .failure(let error):
+                print(error.localizedDescription)
+                UIBlockingProgressHUD.dismiss()
+                self.showAlert()
             }
         }
     }
     
     func fetchProfile(token: String) {
         profileService.fetchProfile(token: token) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else {return}
-                
-                switch result {
-                case .success(_):
-                    UIBlockingProgressHUD.dismiss()
-                    self.switchToTabBarController()
-                case .failure(let error):
-                    UIBlockingProgressHUD.dismiss()
-                    print(error.localizedDescription)
-                }
+            
+            guard let self = self else {return}
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success(let userData):
+                ProfileImageService.shared.fetchProfileImageUrl(userName: userData.loginNameLabel) { _ in }
+                self.switchToTabBarController()
+            case .failure(let error):
+                print(error.localizedDescription)
+                self.showAlert()
             }
+        }
+    }
+    
+    func showAlert(){
+        guard let vc = UIApplication.topViewController else {return}
+        let alertController = UIAlertController(title: "Что-то пошло не так", message: "Не удалось войти в систему", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .cancel) { _ in
+            vc.navigationController?.dismiss(animated: true)
+        }
+        alertController.addAction(action)
+        vc.present(alertController, animated: true)
+    }
+}
+
+extension UIApplication {
+    static var topViewController: UIViewController? {
+        return UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController?.visibleViewController
+    }
+}
+
+extension UIViewController {
+    
+    var visibleViewController: UIViewController? {
+        if let navigationController = self as? UINavigationController {
+            return navigationController.topViewController?.visibleViewController
+        } else if let tabBarController = self as? UITabBarController {
+            return tabBarController.selectedViewController?.visibleViewController
+        } else if let presentedViewController = presentationController {
+            return presentedViewController.presentedViewController
+        } else {
+            return self
         }
     }
 }

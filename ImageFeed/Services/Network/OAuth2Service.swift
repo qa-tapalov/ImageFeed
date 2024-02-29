@@ -9,10 +9,6 @@ import Foundation
 
 final class OAuth2Service {
     
-    enum NetworkError: Error {
-        case codeError
-    }
-    
     enum AuthServiceError: Error {
         case requestError
     }
@@ -20,8 +16,7 @@ final class OAuth2Service {
     private var task: URLSessionTask?
     private var lastCode: String?
     static let shared = OAuth2Service()
-    let url = "https://unsplash.com/oauth/token"
-    private let decoder = JSONDecoder()
+    private let session = URLSession.shared
     private init() {}
     
     func fetchAuthToken(_ code: String, complition: @escaping (Result<String, Error>) -> Void){
@@ -42,29 +37,14 @@ final class OAuth2Service {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            if let error = error {
-                complition(.failure(error))
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
-                return complition(.failure(NetworkError.codeError))
-            }
-            
-            self.decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let data = data else { return }
-            
-            do {
-                let result = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
-                complition(.success(result.accessToken))
-            } catch {
+        let task = session.objectTask(for: request) {(result: Result<OAuthTokenResponseBody, Error>) in
+            switch result {
+            case .success(let response):
+                complition(.success(response.accessToken))
+            case .failure(let error):
+                print("[objectTask]: OAuth2Service - \(error.localizedDescription)")
                 complition(.failure(error))
             }
-            self.task = nil
-            self.lastCode = nil
         }
         self.task = task
         task.resume()
@@ -78,7 +58,7 @@ final class OAuth2Service {
                                          "grant_type": "authorization_code"]
         
         
-        guard let url = URL(string: url) else {assertionFailure("Failed to create URL")
+        guard let url = URL(string: Constants.urlFetchToken) else {assertionFailure("Failed to create URL")
             return nil}
         
         var request = URLRequest(url: url)
