@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     //MARK: - Private Properties
     private lazy var userAvatar: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(resource: .userpickPhoto)
+        view.frame = .init(x: 0, y: 0, width: 70, height: 70)
+        view.layer.cornerRadius = 35
+        view.clipsToBounds = true
         return view
     }()
     
@@ -127,11 +130,16 @@ extension ProfileViewController {
         userDescription.text = profile.descriptionLabel
     }
     
-    private func updateAvatar() {                                   // 8
+    private func updateAvatar() { 
+
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
-        else { return }
-        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
+                
+        else { return}
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        userAvatar.kf.setImage(with: url,
+                               placeholder: UIImage(resource: .placeholder),
+                               options: [.processor(processor)])
     }
 }

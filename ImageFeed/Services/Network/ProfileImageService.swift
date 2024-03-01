@@ -30,7 +30,8 @@ final class ProfileImageService {
             switch result {
             case .success(let responce):
                 complition(.success(responce.profileImage.small))
-                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL" : self.avatarURL])
+                avatarURL = responce.profileImage.large
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL" : self.avatarURL as Any])
                 
             case .failure(let error):
                 print("[dataTask]: ProfileImageService -\(error.localizedDescription)")

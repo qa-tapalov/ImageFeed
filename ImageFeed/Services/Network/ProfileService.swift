@@ -22,7 +22,6 @@ final class ProfileService {
             guard let self = self else {return}
             switch result {
             case .success(let response):
-                print(response)
                 let profileModel = ProfileModel(nameLabel: response.name, loginNameLabel: response.username, descriptionLabel: response.bio)
                 self.profileModel = profileModel
                 complition(.success(profileModel))
