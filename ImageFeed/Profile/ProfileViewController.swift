@@ -118,8 +118,28 @@ final class ProfileViewController: UIViewController {
         setupHorizontalStackView()
         setupVerticalStackView()
         setupConstraits()
+        buttonLogOutAction()
         updateLabel()
     }
+    
+    private func buttonLogOutAction(){
+        logoutButton.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+    }
+    
+    @objc func logOut(){
+        let alert = UIAlertController(title: "Пока-пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let actionConfirm = UIAlertAction(title: " Да", style: .default) { _ in
+            OAuth2TokenStorage.shared.deleteToken()
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            window.rootViewController = SplashViewController()
+        }
+        let actionCancel = UIAlertAction(title: "Нет", style: .cancel) { _ in }
+        alert.addAction(actionCancel)
+        alert.addAction(actionConfirm)
+        
+        present(alert, animated: true)
+    }
+
 }
 
 extension ProfileViewController {
