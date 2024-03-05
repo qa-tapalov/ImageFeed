@@ -9,10 +9,9 @@ import Foundation
 
 struct ProfileResponse: Codable {
     
-        let id: String
-        let username, name, firstName, lastName: String
-        let bio: String?
-        let totalLikes, totalPhotos, totalCollections: Int
-        let email: String
-
+    let id: String
+    let username, name, firstName: String
+    let lastName: String?
+    let bio: String?
+    
 }
