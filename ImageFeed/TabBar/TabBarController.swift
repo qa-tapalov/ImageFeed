@@ -15,16 +15,22 @@ final class TabBarController: UITabBarController {
     }
     
     private func configureTabBar(){
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
         tabBar.barTintColor = .ypBlack
         tabBar.tintColor = .ypWhite
-        let imagesListViewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController")
+        let imagesListViewController = ImagesListViewController()
         let profileViewController = ProfileViewController()
+        
+        imagesListViewController.tabBarItem = UITabBarItem(
+            title: "",
+            image: UIImage(resource: .tabEditorialActive),
+            selectedImage: nil)
+        
         profileViewController.tabBarItem = UITabBarItem(
             title: "",
             image: UIImage(resource: .tabProfileActive),
             selectedImage: nil
         )
+        
         self.viewControllers = [imagesListViewController, profileViewController]
     }
     

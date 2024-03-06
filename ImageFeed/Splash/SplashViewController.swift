@@ -53,8 +53,7 @@ final class SplashViewController: UIViewController{
     }
     
     private func checkAuthorization(){
-        if OAuth2TokenStorage.shared.hasToken() {
-            guard let token = storage.token else {return}
+        if let token = storage.token {
             self.fetchProfile(token: token)
         } else {
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
@@ -67,7 +66,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         vc.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.fetchAuthToken(code: code)
         }
     }
@@ -75,7 +74,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     private func fetchAuthToken(code: String){
         OAuth2Service.shared.fetchAuthToken(code) { [weak self] result in
             
-            guard let self = self else {return}
+            guard let self else {return}
             switch result {
             case .success(let token):
                 self.storage.saveToken(token)
@@ -91,7 +90,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     func fetchProfile(token: String) {
         profileService.fetchProfile(token: token) { [weak self] result in
             
-            guard let self = self else {return}
+            guard let self else {return}
             UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(let userData):
