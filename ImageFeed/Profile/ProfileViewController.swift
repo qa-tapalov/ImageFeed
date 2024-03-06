@@ -6,28 +6,29 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     //MARK: - Private Properties
     private lazy var userAvatar: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(resource: .userpickPhoto)
+        view.frame = .init(x: 0, y: 0, width: 70, height: 70)
+        view.layer.cornerRadius = 35
+        view.clipsToBounds = true
         return view
     }()
     
     private lazy var userName: UILabel = {
         let view = UILabel()
-        view.text = "Екатерина Новикова"
         view.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         view.numberOfLines = 0
         view.textColor = UIColor.ypWhite
         return view
     }()
     
-    private lazy var userEmail: UILabel = {
+    private lazy var loginName: UILabel = {
         let view = UILabel()
-        view.text = "@ekaterina_nov"
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         view.textColor = UIColor.ypGray
         return view
@@ -35,7 +36,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var userDescription: UILabel = {
         let view = UILabel()
-        view.text = "IOS Developer"
         view.numberOfLines = 10
         view.textAlignment = .justified
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -66,10 +66,22 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        profileImageServiceObserver = NotificationCenter.default    // 2
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     //MARK: - Private methods
@@ -82,7 +94,7 @@ final class ProfileViewController: UIViewController {
     private func setupVerticalStackView(){
         vStack.addArrangedSubview(hStack)
         vStack.addArrangedSubview(userName)
-        vStack.addArrangedSubview(userEmail)
+        vStack.addArrangedSubview(loginName)
         vStack.addArrangedSubview(userDescription)
         vStack.translatesAutoresizingMaskIntoConstraints = false
         
@@ -106,5 +118,48 @@ final class ProfileViewController: UIViewController {
         setupHorizontalStackView()
         setupVerticalStackView()
         setupConstraits()
+        buttonLogOutAction()
+        updateLabel()
+    }
+    
+    private func buttonLogOutAction(){
+        logoutButton.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+    }
+    
+    @objc func logOut(){
+        let alert = UIAlertController(title: "Пока-пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let actionConfirm = UIAlertAction(title: " Да", style: .default) { _ in
+            OAuth2TokenStorage.shared.deleteToken()
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            window.rootViewController = SplashViewController()
+        }
+        let actionCancel = UIAlertAction(title: "Нет", style: .cancel) { _ in }
+        alert.addAction(actionCancel)
+        alert.addAction(actionConfirm)
+        
+        present(alert, animated: true)
+    }
+
+}
+
+extension ProfileViewController {
+    private func updateLabel(){
+        guard let profile = ProfileService.shared.profileModel else {return}
+        userName.text = profile.nameLabel
+        loginName.text = "@" + profile.loginNameLabel
+        userDescription.text = profile.descriptionLabel
+    }
+    
+    private func updateAvatar() { 
+
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+                
+        else { return}
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        userAvatar.kf.setImage(with: url,
+                               placeholder: UIImage(resource: .placeholder),
+                               options: [.processor(processor)])
     }
 }

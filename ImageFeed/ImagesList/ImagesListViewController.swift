@@ -8,28 +8,38 @@
 import UIKit
 
 class ImagesListViewController: UIViewController {
-    //MARK: - Outlets
-    @IBOutlet private var tableView: UITableView!
     
     //MARK: - Private properties
+    private let tableView = UITableView()
     private let photosName: [String] = Array(0..<20).map{"\($0)"}
     private let imagesListCell = ImagesListCell()
-    private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        setupViews()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowSingleImageSegueIdentifier {
-            let viewController = segue.destination as! SingleImageViewController
-            let indexPath = sender as! IndexPath
-            let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    private func setupViews(){
+        view.backgroundColor = .ypBlack
+        view.addSubview(tableView)
+        setupTableView()
+    }
+    
+    private func setupTableView(){
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
@@ -47,6 +57,8 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
+        cell.backgroundColor = .ypBlack
+        
         imagesListCell.configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
@@ -56,7 +68,14 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
+        let singleImageViewController = SingleImageViewController()
+        singleImageViewController.modalPresentationStyle = .overFullScreen
+        singleImageViewController.modalTransitionStyle = .coverVertical
+        
+        let imageName = photosName[indexPath.row]
+        singleImageViewController.image = UIImage(named: imageName)
+        present(singleImageViewController, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -16,8 +16,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
 final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
-    
-    private let authorizeURLString = "https://unsplash.com/oauth/authorize"
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     private lazy var webView: WKWebView = {
         let view = WKWebView()
@@ -44,36 +43,18 @@ final class WebViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
         createAuthUrl()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        webView.addObserver(self,
-                            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-                            options: .new,
-                            context: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        webView.removeObserver(self,
-                               forKeyPath: #keyPath(WKWebView.estimatedProgress),
-                               context: nil)
-    }
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
     private func createAuthUrl(){
-        guard var urlComponents = URLComponents(string: authorizeURLString) else {return}
+        guard var urlComponents = URLComponents(string: Constants.authorizeURLString) else {return}
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: Constants.accessKey),
             URLQueryItem(name: "redirect_uri", value: Constants.redirectUri),
@@ -84,8 +65,6 @@ final class WebViewViewController: UIViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
-    
-    
     
     private func updateProgress() {
         progressView.setProgress(Float(webView.estimatedProgress), animated: true)
@@ -162,7 +141,6 @@ extension WebViewViewController: WKNavigationDelegate {
             return nil
         }
     }
-    
     
 }
 

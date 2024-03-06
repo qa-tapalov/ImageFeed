@@ -9,16 +9,48 @@ import Foundation
 
 final class OAuth2Service {
     
-    enum NetworkError: Error {
-        case codeError
+    enum AuthServiceError: Error {
+        case requestError
     }
     
+    private var task: URLSessionTask?
+    private var lastCode: String?
     static let shared = OAuth2Service()
-    let url = "https://unsplash.com/oauth/token"
-    private let decoder = JSONDecoder()
+    private let session = URLSession.shared
     private init() {}
     
     func fetchAuthToken(_ code: String, complition: @escaping (Result<String, Error>) -> Void){
+        assert(Thread.isMainThread)
+        
+        guard lastCode != code
+        else {
+            complition(.failure(AuthServiceError.requestError))
+            return
+        }
+        task?.cancel()
+        lastCode = code
+        
+        guard
+            let request = createOAuthTokenRequest(code: code)
+        else {
+            complition(.failure(AuthServiceError.requestError))
+            return
+        }
+        
+        let task = session.objectTask(for: request) {(result: Result<OAuthTokenResponseBody, Error>) in
+            switch result {
+            case .success(let response):
+                complition(.success(response.accessToken))
+            case .failure(let error):
+                print("[objectTask]: OAuth2Service - \(error.localizedDescription)")
+                complition(.failure(error))
+            }
+        }
+        self.task = task
+        task.resume()
+    }
+    
+    private func createOAuthTokenRequest(code: String) -> URLRequest? {
         let parameters: [String: Any] = ["client_id": Constants.accessKey,
                                          "client_secret": Constants.secretKey,
                                          "redirect_uri": Constants.redirectUri,
@@ -26,7 +58,8 @@ final class OAuth2Service {
                                          "grant_type": "authorization_code"]
         
         
-        guard let url = URL(string: url) else {return}
+        guard let url = URL(string: Constants.urlFetchToken) else {assertionFailure("Failed to create URL")
+            return nil}
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.POST.rawValue
@@ -36,30 +69,7 @@ final class OAuth2Service {
         } catch let error as NSError {
             print(error.localizedDescription)
         }
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            if let error = error {
-                complition(.failure(error))
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
-                return complition(.failure(NetworkError.codeError))
-            }
-            
-            self.decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let data = data else { return }
-            
-            do {
-                let result = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
-                complition(.success(result.accessToken))
-            } catch {
-                complition(.failure(error))
-            }
-        }
-        task.resume()
+        return request
     }
     
 }
