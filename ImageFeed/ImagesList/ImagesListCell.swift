@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Kingfisher
 final class ImagesListCell: UITableViewCell {
     //MARK: - Name cell
     static let reuseIdentifier = "ImagesListCell"
@@ -51,6 +51,11 @@ final class ImagesListCell: UITableViewCell {
         
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageCell.kf.cancelDownloadTask()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -67,14 +72,13 @@ final class ImagesListCell: UITableViewCell {
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let imageName = String(indexPath.row)
-        guard let imageCell = UIImage(named: imageName) else {return}
-        cell.imageCell.image = imageCell
-        let date = Date()
-        cell.dateLabel.text = date.dateFormat
+        let url = URL(string: ImagesListService.shared.photos[indexPath.row].thumbImageURL)
+        cell.imageCell.kf.indicatorType = .activity
+        cell.imageCell.kf.setImage(with: url, placeholder: UIImage(resource: .stub))
+        cell.dateLabel.text = ImagesListService.shared.photos[indexPath.row].userName
         let likeImage: UIImage!
         
-        if indexPath.row % 2 == 0 {
+        if ImagesListService.shared.photos[indexPath.row].isLiked{
             likeImage = UIImage(named: "likeActive")
         } else {
             likeImage = UIImage(named: "likeNoActive")

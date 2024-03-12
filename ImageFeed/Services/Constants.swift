@@ -18,6 +18,7 @@ final class Constants {
     static let urlFetchToken = "https://unsplash.com/oauth/token"
     static let urlGETProfile = Constants.defaultBaseUrl + "/me"
     static let urlGETUserInfo = Constants.defaultBaseUrl + "/users/"
+    static let urlGETPhotos = Constants.defaultBaseUrl + "/photos"
 }
 
 
