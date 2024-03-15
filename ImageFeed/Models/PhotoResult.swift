@@ -22,3 +22,7 @@ struct PhotoResult: Codable {
     let likedByUser: Bool
     let urls: UrlsPhoto
 }
+
+struct LikeResult: Codable {
+    let photo: PhotoResult
+}

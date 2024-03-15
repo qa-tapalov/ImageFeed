@@ -6,15 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
-    var image: UIImage! {
-        didSet {
-            guard isViewLoaded else {return}
-            imageView.image = image
-        }
-    }
+    var imageUrl = ""
     
     //MARK: - Private properties
     private lazy var imageView: UIImageView = {
@@ -49,8 +45,39 @@ final class SingleImageViewController: UIViewController {
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = image
         setupViews()
+        showImage()
+    }
+    
+    private func showImage(){
+        UIBlockingProgressHUD.show()
+        let url = URL(string: imageUrl)
+        imageView.kf.setImage(with: url, placeholder: UIImage(resource: .stub)) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else {return}
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                self.showError()
+                print(error.localizedDescription)
+                break
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(title: "Что-то пошло не так", message: "Попробовать ещё раз?", preferredStyle: .alert)
+        let actionConfirm = UIAlertAction(title: "Повторить", style: .default) { _ in
+            self.showImage()
+        }
+        let actionCancel = UIAlertAction(title: "Не надо", style: .cancel) { [weak self] _ in
+            guard let self else {return}
+            self.dismiss(animated: true)}
+        alert.addAction(actionCancel)
+        alert.addAction(actionConfirm)
+        
+        present(alert, animated: true)
     }
     
     //MARK: - Private methods

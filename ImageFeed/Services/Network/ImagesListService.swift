@@ -15,6 +15,8 @@ final class ImagesListService {
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
+    private init(){}
+    
     func fetchPhotosNextPage() {
         task?.cancel()
         let nextPage = lastLoadedPage + 1
@@ -44,10 +46,32 @@ final class ImagesListService {
         task.resume()
     }
     
+    func changeLike(photoId: String, isLike: Bool, complition: @escaping (Result<Photo, Error>) -> Void){
+        guard let request = createRequestLike(id: photoId, isLike: isLike) else {return}
+        
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
+            guard let self else { return }
+            switch result {
+            case .failure(let error):
+                complition(.failure(error))
+                break
+            case .success(let response):
+                let newPhoto = convertToPhoto(responce: response.photo)
+                let index = self.photos.firstIndex(where: { $0.id == photoId })
+                guard let index else { return }
+                DispatchQueue.main.async {
+                    self.photos[index] = newPhoto
+                }
+                complition(.success(newPhoto))
+            }
+        }
+        task.resume()
+    }
+    
     private func createRequest(page: Int) -> URLRequest?{
         guard var urlComponents = URLComponents(string: Constants.urlGETPhotos) else {return nil}
         urlComponents.queryItems = [
-            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "page", value: String(page))
         ]
         guard let url = urlComponents.url else {return nil}
         
@@ -59,8 +83,24 @@ final class ImagesListService {
         return request
     }
     
-    func convertToPhoto(responce: PhotoResult) -> Photo {
-        let models = Photo(id: responce.id, size: CGSize(width: responce.width, height: responce.height), userName: responce.user.name, welcomeDescription: responce.description, thumbImageURL: responce.urls.thumb, largeImageURL: responce.urls.full, isLiked: responce.likedByUser)
+    private func convertToPhoto(responce: PhotoResult) -> Photo {
+        let models = Photo(id: responce.id, size: CGSize(width: responce.width, height: responce.height), userName: responce.user.name, welcomeDescription: responce.description, thumbImageURL: responce.urls.small, largeImageURL: responce.urls.full, isLiked: responce.likedByUser)
         return models
+    }
+    
+    private func createRequestLike(id: String, isLike: Bool)-> URLRequest?{
+        let url = Constants.urlChangeLike.replacingOccurrences(of: "id", with: id)
+        guard let url = URL(string: url) else {return nil}
+        var request = URLRequest(url: url)
+        let method = isLike ? HTTPMethod.DELETE.rawValue : HTTPMethod.POST.rawValue
+        request.httpMethod = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let token = OAuth2TokenStorage.shared.token else {return nil}
+        request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
+    func removeData(){
+        photos.removeAll()
     }
 }

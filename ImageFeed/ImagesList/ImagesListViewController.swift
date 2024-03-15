@@ -90,7 +90,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .ypBlack
-        
+        imageListCell.delegate = self
         imagesListCell.configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
@@ -111,8 +111,8 @@ extension ImagesListViewController: UITableViewDelegate {
         singleImageViewController.modalPresentationStyle = .overFullScreen
         singleImageViewController.modalTransitionStyle = .coverVertical
         
-        let imageName = photosName[indexPath.row]
-        singleImageViewController.image = UIImage(named: imageName)
+        let imageUrl = photos[indexPath.row].largeImageURL
+        singleImageViewController.imageUrl = imageUrl
         present(singleImageViewController, animated: true, completion: nil)
     }
     
@@ -123,5 +123,26 @@ extension ImagesListViewController: UITableViewDelegate {
         let heightCell = image.size.height * (imageViewWidth / image.size.width) + imageInsets.top + imageInsets.bottom
         return heightCell
     }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {return}
+        let photo = imagesListService.photos[indexPath.row]
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let newPhoto):
+                    cell.setIsliked(isLiked: newPhoto.isLiked)
+                    UIBlockingProgressHUD.dismiss()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    UIBlockingProgressHUD.dismiss()
+                }
+            }
+        }
+    }
+    
 }
 

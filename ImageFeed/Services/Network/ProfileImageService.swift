@@ -51,4 +51,8 @@ final class ProfileImageService {
         request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         return request
     }
+    
+    func removeData(){
+        avatarURL = nil
+    }
 }

@@ -37,6 +37,7 @@
 		1BBC92D82B6E6EBD0003F386 /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBC92D72B6E6EBD0003F386 /* OAuth2TokenStorage.swift */; };
 		1BBC92DA2B6FEF380003F386 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBC92D92B6FEF380003F386 /* HTTPMethod.swift */; };
 		1BD0B3FD2B597B44001D4CE3 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD0B3FC2B597B44001D4CE3 /* SingleImageViewController.swift */; };
+		1BE3BE832BA45D0C003E7352 /* ProfileCleanService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE3BE822BA45D0C003E7352 /* ProfileCleanService.swift */; };
 		1BF87D942B430A13003A8E29 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF87D932B430A13003A8E29 /* ImagesListCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 		1BBC92D72B6E6EBD0003F386 /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		1BBC92D92B6FEF380003F386 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		1BD0B3FC2B597B44001D4CE3 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
+		1BE3BE822BA45D0C003E7352 /* ProfileCleanService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCleanService.swift; sourceTree = "<group>"; };
 		1BF87D932B430A13003A8E29 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -171,6 +173,7 @@
 				1BBC92D72B6E6EBD0003F386 /* OAuth2TokenStorage.swift */,
 				1BB8455B2B6BFD4800626DE1 /* Constants.swift */,
 				1B65FB8A2B8A4782006D914F /* UIBlockingProgressHUD.swift */,
+				1BE3BE822BA45D0C003E7352 /* ProfileCleanService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				1B927FB82B57C0DA003E0030 /* Date + Extension.swift in Sources */,
 				1B28A4472B3D508C0061E874 /* SceneDelegate.swift in Sources */,
 				1BB8455F2B6C035600626DE1 /* AuthViewController.swift in Sources */,
+				1BE3BE832BA45D0C003E7352 /* ProfileCleanService.swift in Sources */,
 				1BBC92D82B6E6EBD0003F386 /* OAuth2TokenStorage.swift in Sources */,
 				1B2B530C2B98412E0095456A /* PhotoResult.swift in Sources */,
 				1B65FB932B8C7881006D914F /* ProfileImageService.swift in Sources */,

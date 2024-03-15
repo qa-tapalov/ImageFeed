@@ -16,9 +16,10 @@ final class Constants {
     static let defaultBaseUrl = "https://api.unsplash.com"
     static let authorizeURLString = "https://unsplash.com/oauth/authorize"
     static let urlFetchToken = "https://unsplash.com/oauth/token"
-    static let urlGETProfile = Constants.defaultBaseUrl + "/me"
-    static let urlGETUserInfo = Constants.defaultBaseUrl + "/users/"
-    static let urlGETPhotos = Constants.defaultBaseUrl + "/photos"
+    static let urlGETProfile = defaultBaseUrl + "/me"
+    static let urlGETUserInfo = defaultBaseUrl + "/users/"
+    static let urlGETPhotos = defaultBaseUrl + "/photos"
+    static let urlChangeLike = defaultBaseUrl + "/photos/id/like"
 }
 
 

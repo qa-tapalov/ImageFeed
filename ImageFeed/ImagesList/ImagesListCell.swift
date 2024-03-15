@@ -7,10 +7,16 @@
 
 import UIKit
 import Kingfisher
+
+protocol ImagesListCellDelegate: AnyObject {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
     //MARK: - Name cell
     static let reuseIdentifier = "ImagesListCell"
     
+    weak var delegate: ImagesListCellDelegate?
     //MARK: - Private Properties
     private lazy var dateLabel: UILabel = {
         let view = UILabel()
@@ -23,9 +29,8 @@ final class ImagesListCell: UITableViewCell {
     private lazy var likeButton: UIButton = {
         let view = UIButton(type: .custom)
         view.translatesAutoresizingMaskIntoConstraints = false
-        
+        view.addTarget(self, action: #selector(likeButtonClicked), for: .touchUpInside)
         return view
-        
     }()
     
     private lazy var imageCell: UIImageView = {
@@ -40,7 +45,6 @@ final class ImagesListCell: UITableViewCell {
     private lazy var gradientView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        
         return view
     }()
     
@@ -48,7 +52,6 @@ final class ImagesListCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        
     }
     
     override func prepareForReuse() {
@@ -84,6 +87,16 @@ final class ImagesListCell: UITableViewCell {
             likeImage = UIImage(named: "likeNoActive")
         }
         cell.likeButton.setImage(likeImage, for: .normal)
+    }
+    
+    func setIsliked(isLiked: Bool){
+        let likeImage: UIImage!
+        if isLiked{
+            likeImage = UIImage(named: "likeActive")
+        } else {
+            likeImage = UIImage(named: "likeNoActive")
+        }
+        likeButton.setImage(likeImage, for: .normal)
     }
     
     func setupConstraitsImageCell(){
@@ -132,6 +145,10 @@ final class ImagesListCell: UITableViewCell {
         setupConstraitsLikeButton()
         setupConstraitsDateLabel()
         setupConstraitsGradientView()
+    }
+    
+    @objc private func likeButtonClicked(){
+        delegate?.imagesListCellDidTapLike(self)
     }
     
 }
