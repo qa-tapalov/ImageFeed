@@ -43,7 +43,7 @@ final class ProfileService {
         return request
     }
     
-    func removeData(){
+    func removeProfileModel(){
         profileModel = nil
     }
 }

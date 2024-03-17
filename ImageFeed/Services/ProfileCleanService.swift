@@ -29,9 +29,9 @@ final class ProfileCleanService {
     
     private func cleanData(){
         OAuth2TokenStorage.shared.deleteToken()
-        ImagesListService.shared.removeData()
-        ProfileService.shared.removeData()
-        ProfileImageService.shared.removeData()
+        ImagesListService.shared.removePhotos()
+        ProfileService.shared.removeProfileModel()
+        ProfileImageService.shared.removeAvatarURL()
     }
 }
 

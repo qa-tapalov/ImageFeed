@@ -39,7 +39,7 @@ final class ImagesListService {
                     }
                     NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self, userInfo: ["photo" : self.photos as Any])
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print("[dataTask]: ImagesListService -\(error.localizedDescription)")
                 }
             }
         }
@@ -54,7 +54,6 @@ final class ImagesListService {
             switch result {
             case .failure(let error):
                 complition(.failure(error))
-                break
             case .success(let response):
                 let newPhoto = convertToPhoto(responce: response.photo)
                 let index = self.photos.firstIndex(where: { $0.id == photoId })
@@ -84,7 +83,7 @@ final class ImagesListService {
     }
     
     private func convertToPhoto(responce: PhotoResult) -> Photo {
-        let models = Photo(id: responce.id, size: CGSize(width: responce.width, height: responce.height), userName: responce.user.name, welcomeDescription: responce.description, thumbImageURL: responce.urls.small, largeImageURL: responce.urls.full, isLiked: responce.likedByUser)
+        let models = Photo(id: responce.id, size: CGSize(width: responce.width, height: responce.height), createdAt: responce.createdAt?.isoDate(), welcomeDescription: responce.description, thumbImageURL: responce.urls.small, largeImageURL: responce.urls.full, isLiked: responce.likedByUser)
         return models
     }
     
@@ -100,7 +99,7 @@ final class ImagesListService {
         return request
     }
     
-    func removeData(){
+    func removePhotos(){
         photos.removeAll()
     }
 }

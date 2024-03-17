@@ -136,7 +136,6 @@ final class ProfileViewController: UIViewController {
         let actionCancel = UIAlertAction(title: "Нет", style: .cancel) { _ in }
         alert.addAction(actionCancel)
         alert.addAction(actionConfirm)
-        
         present(alert, animated: true)
     }
     

@@ -52,7 +52,7 @@ final class ProfileImageService {
         return request
     }
     
-    func removeData(){
+    func removeAvatarURL(){
         avatarURL = nil
     }
 }

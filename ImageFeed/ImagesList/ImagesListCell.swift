@@ -78,7 +78,7 @@ final class ImagesListCell: UITableViewCell {
         let url = URL(string: ImagesListService.shared.photos[indexPath.row].thumbImageURL)
         cell.imageCell.kf.indicatorType = .activity
         cell.imageCell.kf.setImage(with: url, placeholder: UIImage(resource: .stub))
-        cell.dateLabel.text = ImagesListService.shared.photos[indexPath.row].userName
+        cell.dateLabel.text = ImagesListService.shared.photos[indexPath.row].createdAt?.dateFormat
         let likeImage: UIImage!
         
         if ImagesListService.shared.photos[indexPath.row].isLiked{
