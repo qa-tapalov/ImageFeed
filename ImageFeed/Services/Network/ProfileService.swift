@@ -19,7 +19,7 @@ final class ProfileService {
         
         let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResponse, Error>) in
             
-            guard let self = self else {return}
+            guard let self else {return}
             switch result {
             case .success(let response):
                 let profileModel = ProfileModel(nameLabel: response.name, loginNameLabel: response.username, descriptionLabel: response.bio)

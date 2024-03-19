@@ -83,7 +83,13 @@ final class ImagesListService {
     }
     
     private func convertToPhoto(responce: PhotoResult) -> Photo {
-        let models = Photo(id: responce.id, size: CGSize(width: responce.width, height: responce.height), createdAt: responce.createdAt?.isoDate(), welcomeDescription: responce.description, thumbImageURL: responce.urls.small, largeImageURL: responce.urls.full, isLiked: responce.likedByUser)
+        let models = Photo(id: responce.id,
+                           size: CGSize(width: responce.width, height: responce.height),
+                           createdAt: responce.createdAt?.isoDate(),
+                           welcomeDescription: responce.description,
+                           thumbImageURL: responce.urls.small,
+                           largeImageURL: responce.urls.full,
+                           isLiked: responce.likedByUser)
         return models
     }
     

@@ -100,9 +100,12 @@ final class SingleImageViewController: UIViewController {
         scrollView.addSubview(imageView)
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1
-        scrollView.maximumZoomScale = 10
+        scrollView.maximumZoomScale = 5
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        scrollView.addGestureRecognizer(doubleTap)
     }
     
     private func setupViews(){
@@ -142,5 +145,13 @@ final class SingleImageViewController: UIViewController {
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
+    }
+    
+    @objc private func handleDoubleTap(_ sender: UIGestureRecognizer) {
+        if scrollView.zoomScale < scrollView.maximumZoomScale {
+            scrollView.setZoomScale(scrollView.zoomScale + 2, animated: true)
+        } else {
+            scrollView.setZoomScale(1, animated: true)
+        }
     }
 }
