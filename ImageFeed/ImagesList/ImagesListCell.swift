@@ -79,23 +79,12 @@ final class ImagesListCell: UITableViewCell {
         cell.imageCell.kf.indicatorType = .activity
         cell.imageCell.kf.setImage(with: url, placeholder: UIImage(resource: .stub))
         cell.dateLabel.text = ImagesListService.shared.photos[indexPath.row].createdAt?.dateFormat
-        let likeImage: UIImage!
-        
-        if ImagesListService.shared.photos[indexPath.row].isLiked{
-            likeImage = UIImage(named: "likeActive")
-        } else {
-            likeImage = UIImage(named: "likeNoActive")
-        }
+        let likeImage: UIImage! = ImagesListService.shared.photos[indexPath.row].isLiked ? UIImage(resource: .likeActive) : UIImage(resource: .likeNoActive)
         cell.likeButton.setImage(likeImage, for: .normal)
     }
     
     func setIsliked(isLiked: Bool){
-        let likeImage: UIImage!
-        if isLiked{
-            likeImage = UIImage(named: "likeActive")
-        } else {
-            likeImage = UIImage(named: "likeNoActive")
-        }
+        let likeImage: UIImage! = isLiked ? UIImage(resource: .likeActive) : UIImage(resource: .likeNoActive)
         likeButton.setImage(likeImage, for: .normal)
     }
     
