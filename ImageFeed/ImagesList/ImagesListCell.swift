@@ -6,11 +6,17 @@
 //
 
 import UIKit
+import Kingfisher
+
+protocol ImagesListCellDelegate: AnyObject {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell)
+}
 
 final class ImagesListCell: UITableViewCell {
     //MARK: - Name cell
     static let reuseIdentifier = "ImagesListCell"
     
+    weak var delegate: ImagesListCellDelegate?
     //MARK: - Private Properties
     private lazy var dateLabel: UILabel = {
         let view = UILabel()
@@ -23,9 +29,8 @@ final class ImagesListCell: UITableViewCell {
     private lazy var likeButton: UIButton = {
         let view = UIButton(type: .custom)
         view.translatesAutoresizingMaskIntoConstraints = false
-        
+        view.addTarget(self, action: #selector(likeButtonClicked), for: .touchUpInside)
         return view
-        
     }()
     
     private lazy var imageCell: UIImageView = {
@@ -40,7 +45,6 @@ final class ImagesListCell: UITableViewCell {
     private lazy var gradientView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        
         return view
     }()
     
@@ -48,7 +52,11 @@ final class ImagesListCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageCell.kf.cancelDownloadTask()
     }
     
     required init?(coder: NSCoder) {
@@ -67,19 +75,17 @@ final class ImagesListCell: UITableViewCell {
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let imageName = String(indexPath.row)
-        guard let imageCell = UIImage(named: imageName) else {return}
-        cell.imageCell.image = imageCell
-        let date = Date()
-        cell.dateLabel.text = date.dateFormat
-        let likeImage: UIImage!
-        
-        if indexPath.row % 2 == 0 {
-            likeImage = UIImage(named: "likeActive")
-        } else {
-            likeImage = UIImage(named: "likeNoActive")
-        }
+        let url = URL(string: ImagesListService.shared.photos[indexPath.row].thumbImageURL)
+        cell.imageCell.kf.indicatorType = .activity
+        cell.imageCell.kf.setImage(with: url, placeholder: UIImage(resource: .stub))
+        cell.dateLabel.text = ImagesListService.shared.photos[indexPath.row].createdAt?.dateFormat
+        let likeImage: UIImage! = ImagesListService.shared.photos[indexPath.row].isLiked ? UIImage(resource: .likeActive) : UIImage(resource: .likeNoActive)
         cell.likeButton.setImage(likeImage, for: .normal)
+    }
+    
+    func setIsliked(isLiked: Bool){
+        let likeImage: UIImage! = isLiked ? UIImage(resource: .likeActive) : UIImage(resource: .likeNoActive)
+        likeButton.setImage(likeImage, for: .normal)
     }
     
     func setupConstraitsImageCell(){
@@ -128,6 +134,10 @@ final class ImagesListCell: UITableViewCell {
         setupConstraitsLikeButton()
         setupConstraitsDateLabel()
         setupConstraitsGradientView()
+    }
+    
+    @objc private func likeButtonClicked(){
+        delegate?.imagesListCellDidTapLike(self)
     }
     
 }

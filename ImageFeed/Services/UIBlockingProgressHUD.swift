@@ -25,6 +25,7 @@ final class UIBlockingProgressHUD {
     
     static func setupProgressHUD(){
         ProgressHUD.animationType = .activityIndicator
+        ProgressHUD.colorAnimation = .lightGray
         ProgressHUD.mediaSize = 30
         ProgressHUD.marginSize = 30
         ProgressHUD.animate()

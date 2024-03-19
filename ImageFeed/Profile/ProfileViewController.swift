@@ -78,7 +78,7 @@ final class ProfileViewController: UIViewController {
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.updateAvatar()
             }
         updateAvatar()
@@ -129,17 +129,16 @@ final class ProfileViewController: UIViewController {
     @objc func logOut(){
         let alert = UIAlertController(title: "Пока-пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
         let actionConfirm = UIAlertAction(title: " Да", style: .default) { _ in
-            OAuth2TokenStorage.shared.deleteToken()
+            ProfileCleanService.shared.logout()
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
             window.rootViewController = SplashViewController()
         }
         let actionCancel = UIAlertAction(title: "Нет", style: .cancel) { _ in }
         alert.addAction(actionCancel)
         alert.addAction(actionConfirm)
-        
         present(alert, animated: true)
     }
-
+    
 }
 
 extension ProfileViewController {
@@ -150,8 +149,8 @@ extension ProfileViewController {
         userDescription.text = profile.descriptionLabel
     }
     
-    private func updateAvatar() { 
-
+    private func updateAvatar() {
+        
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)

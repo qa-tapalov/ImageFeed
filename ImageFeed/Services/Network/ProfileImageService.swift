@@ -26,7 +26,7 @@ final class ProfileImageService {
         
         let task = session.objectTask(for: request) { [weak self] (result: Result<UserResponce, Error>) in
             
-            guard let self = self else {return}
+            guard let self else {return}
             switch result {
             case .success(let responce):
                 complition(.success(responce.profileImage.small))
@@ -50,5 +50,9 @@ final class ProfileImageService {
         guard let token = OAuth2TokenStorage.shared.token else {return nil}
         request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         return request
+    }
+    
+    func removeAvatarURL(){
+        avatarURL = nil
     }
 }
