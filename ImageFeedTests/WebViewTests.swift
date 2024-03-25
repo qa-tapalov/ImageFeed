@@ -4,32 +4,101 @@
 //
 //  Created by Андрей Тапалов on 21.03.2024.
 //
-
+@testable import ImageFeed
 import XCTest
 
-final class ImageFeedTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+final class WebViewPresenterSpy: WebViewPresenterProtocol {
+    var viewDidLoadCalled: Bool = false
+    var view: ImageFeed.WebViewControllerProtocol?
+    
+    func didLoad() {
+        viewDidLoadCalled = true
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    func didUpdateProgressValue(_ newValue: Double) {}
+    
+    func code(from url: URL) -> String? {
+        return nil
     }
+}
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+final class WebViewViewControllerSpy: WebViewControllerProtocol {
+    var presenter: ImageFeed.WebViewPresenterProtocol?
+    var loadRequestCalled: Bool = false
+    func load(request: URLRequest) {
+        loadRequestCalled = true
     }
+    
+    func setProgressValue(_ newValue: Float) {}
+    
+    func setProgressHidden(_ isHidden: Bool) {}
+}
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
+final class WebViewTests: XCTestCase {
+    
+    func testViewControllerCallsViewDidLoad() {
+        let viewController = WebViewViewController()
+        let presenter = WebViewPresenterSpy()
+        viewController.presenter = presenter
+        presenter.view = viewController
+        
+        _ = viewController.view
+        
+        XCTAssertTrue(presenter.viewDidLoadCalled)
     }
-
+    
+    func testPresenterCallsLoadRequest(){
+        let viewController = WebViewViewControllerSpy()
+        let presenter = WebViewPresenter(authHelper: AuthHelper())
+        viewController.presenter = presenter
+        presenter.view = viewController
+        presenter.didLoad()
+        
+        XCTAssertTrue(viewController.loadRequestCalled)
+    }
+    
+    func testProgressVisibleWhenLessThenOne(){
+        let authHelper = AuthHelper()
+        let presenter = WebViewPresenter(authHelper: authHelper)
+        let progress: Float = 0.6
+        let shouldHideProgress = presenter.shouldHideProgress(for: progress)
+        
+        XCTAssertFalse(shouldHideProgress)
+    }
+    
+    func testProgressHiddenWhenOne(){
+        let authHelper = AuthHelper()
+        let presenter = WebViewPresenter(authHelper: authHelper)
+        let progress: Float = 1.0
+        let shouldHideProgress = presenter.shouldHideProgress(for: progress)
+        
+        XCTAssertTrue(shouldHideProgress)
+    }
+    
+    func testAuthHelperAuthURL(){
+        let configuration = AuthConfiguration.standart
+        let authHelper = AuthHelper(configuration: configuration)
+        
+        guard let url = authHelper.authUrl() else {return}
+        let urlString = url.absoluteString
+        
+        XCTAssertTrue(urlString.contains(configuration.authUrlString))
+        XCTAssertTrue(urlString.contains(configuration.accessKey))
+        XCTAssertTrue(urlString.contains(configuration.redirectUri))
+        XCTAssertTrue(urlString.contains(configuration.accessScope))
+        XCTAssertTrue(urlString.contains("code"))
+    }
+    
+    func testCodeFromURL(){
+        let authHelper = AuthHelper()
+        guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/authorize/native") else { return }
+        urlComponents.queryItems = [
+            URLQueryItem(name: "code", value: "test code")
+        ]
+        guard let url = urlComponents.url else {return}
+        
+        let code = authHelper.code(from: url)
+        
+        XCTAssertEqual(code, "test code")
+    }
 }
