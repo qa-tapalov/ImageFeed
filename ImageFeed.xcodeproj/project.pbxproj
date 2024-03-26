@@ -20,6 +20,7 @@
 		1B4DD9892B70BB47004DCC35 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4DD9882B70BB47004DCC35 /* SplashViewController.swift */; };
 		1B5017802B58EDD200CEE9E6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B50177F2B58EDD200CEE9E6 /* ProfileViewController.swift */; };
 		1B60E7742BB1C1770024E8F8 /* ProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B60E7732BB1C1770024E8F8 /* ProfileViewPresenter.swift */; };
+		1B60E7762BB2A2790024E8F8 /* ProfileViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B60E7752BB2A2790024E8F8 /* ProfileViewTests.swift */; };
 		1B65FB8B2B8A4782006D914F /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B65FB8A2B8A4782006D914F /* UIBlockingProgressHUD.swift */; };
 		1B65FB8D2B8A6847006D914F /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B65FB8C2B8A6847006D914F /* ProfileService.swift */; };
 		1B65FB8F2B8A6874006D914F /* ProfileResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B65FB8E2B8A6874006D914F /* ProfileResponse.swift */; };
@@ -70,6 +71,7 @@
 		1B4DD9882B70BB47004DCC35 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		1B50177F2B58EDD200CEE9E6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1B60E7732BB1C1770024E8F8 /* ProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewPresenter.swift; sourceTree = "<group>"; };
+		1B60E7752BB2A2790024E8F8 /* ProfileViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewTests.swift; sourceTree = "<group>"; };
 		1B65FB8A2B8A4782006D914F /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		1B65FB8C2B8A6847006D914F /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		1B65FB8E2B8A6874006D914F /* ProfileResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResponse.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 			isa = PBXGroup;
 			children = (
 				1B9E54C82BAC719600933338 /* WebViewTests.swift */,
+				1B60E7752BB2A2790024E8F8 /* ProfileViewTests.swift */,
 			);
 			path = ImageFeedTests;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B60E7762BB2A2790024E8F8 /* ProfileViewTests.swift in Sources */,
 				1B9E54C92BAC719600933338 /* WebViewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

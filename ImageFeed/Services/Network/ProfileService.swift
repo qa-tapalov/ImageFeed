@@ -11,7 +11,7 @@ final class ProfileService {
     
     let session = URLSession.shared
     static let shared = ProfileService()
-    private(set) var profileModel: ProfileModel?
+    var profileModel: ProfileModel?
     private init() {}
     
     func fetchProfile(token: String, complition: @escaping (Result<ProfileModel, Error>) -> Void) {
