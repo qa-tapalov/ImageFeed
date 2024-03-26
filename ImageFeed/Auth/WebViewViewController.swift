@@ -21,10 +21,10 @@ protocol WebViewControllerProtocol: AnyObject {
 }
 
 final class WebViewViewController: UIViewController, WebViewControllerProtocol {
+    
     func load(request: URLRequest) {
         webView.load(request)
     }
-    
     
     weak var delegate: WebViewViewControllerDelegate?
     private var estimatedProgressObservation: NSKeyValueObservation?

@@ -8,6 +8,10 @@
 import UIKit
 import Kingfisher
 
+protocol ProfileViewProtocol: AnyObject {
+    func updateProfileData(model: ProfileModel, avatarUrl: String)
+}
+
 final class ProfileViewController: UIViewController {
     
     //MARK: - Private Properties
@@ -66,22 +70,17 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    private var profileImageServiceObserver: NSObjectProtocol?
-    
+    var presenter: ProfilePresenterProtocol?
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        profileImageServiceObserver = NotificationCenter.default    // 2
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
+        presenter = ProfileViewPresenter(view: self)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.fetchUserData()
     }
     
     //MARK: - Private methods
@@ -107,8 +106,7 @@ final class ProfileViewController: UIViewController {
             vStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             hStack.trailingAnchor.constraint(equalTo: vStack.trailingAnchor),
             userAvatar.widthAnchor.constraint(equalToConstant: 70),
-            userAvatar.heightAnchor.constraint(equalToConstant: 70),
-            
+            userAvatar.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
     
@@ -119,7 +117,6 @@ final class ProfileViewController: UIViewController {
         setupVerticalStackView()
         setupConstraits()
         buttonLogOutAction()
-        updateLabel()
     }
     
     private func buttonLogOutAction(){
@@ -128,8 +125,9 @@ final class ProfileViewController: UIViewController {
     
     @objc func logOut(){
         let alert = UIAlertController(title: "Пока-пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
-        let actionConfirm = UIAlertAction(title: " Да", style: .default) { _ in
-            ProfileCleanService.shared.logout()
+        let actionConfirm = UIAlertAction(title: " Да", style: .default) { [weak self]_ in
+            guard let self else {return}
+            self.presenter?.logout()
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
             window.rootViewController = SplashViewController()
         }
@@ -138,27 +136,18 @@ final class ProfileViewController: UIViewController {
         alert.addAction(actionConfirm)
         present(alert, animated: true)
     }
-    
 }
 
-extension ProfileViewController {
-    private func updateLabel(){
-        guard let profile = ProfileService.shared.profileModel else {return}
-        userName.text = profile.nameLabel
-        loginName.text = "@" + profile.loginNameLabel
-        userDescription.text = profile.descriptionLabel
-    }
-    
-    private func updateAvatar() {
+extension ProfileViewController: ProfileViewProtocol {
+    func updateProfileData(model: ProfileModel, avatarUrl: String) {
         
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-                
-        else { return}
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
-        userAvatar.kf.setImage(with: url,
-                               placeholder: UIImage(resource: .placeholder),
-                               options: [.processor(processor)])
+        self.userName.text = model.nameLabel
+        self.loginName.text = "@" + model.loginNameLabel
+        self.userDescription.text = model.descriptionLabel
+        guard let url = URL(string: avatarUrl) else { return}
+     let processor = RoundCornerImageProcessor(cornerRadius: 35)
+     userAvatar.kf.setImage(with: url,
+                            placeholder: UIImage(resource: .placeholder),
+                            options: [.processor(processor)])
     }
 }
