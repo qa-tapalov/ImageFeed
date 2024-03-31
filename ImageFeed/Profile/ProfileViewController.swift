@@ -20,6 +20,7 @@ final class ProfileViewController: UIViewController {
         view.frame = .init(x: 0, y: 0, width: 70, height: 70)
         view.layer.cornerRadius = 35
         view.clipsToBounds = true
+        view.accessibilityIdentifier = "userAvatar"
         return view
     }()
     
@@ -28,13 +29,15 @@ final class ProfileViewController: UIViewController {
         view.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         view.numberOfLines = 0
         view.textColor = UIColor.ypWhite
+        view.accessibilityIdentifier = "userName"
         return view
     }()
     
-    private lazy var loginName: UILabel = {
+    private lazy var userLogin: UILabel = {
         let view = UILabel()
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         view.textColor = UIColor.ypGray
+        view.accessibilityIdentifier = "userLogin"
         return view
     }()
     
@@ -44,6 +47,7 @@ final class ProfileViewController: UIViewController {
         view.textAlignment = .justified
         view.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         view.textColor = UIColor.ypWhite
+        view.accessibilityIdentifier = "userDescription"
         return view
     }()
     
@@ -93,7 +97,7 @@ final class ProfileViewController: UIViewController {
     private func setupVerticalStackView(){
         vStack.addArrangedSubview(hStack)
         vStack.addArrangedSubview(userName)
-        vStack.addArrangedSubview(loginName)
+        vStack.addArrangedSubview(userLogin)
         vStack.addArrangedSubview(userDescription)
         vStack.translatesAutoresizingMaskIntoConstraints = false
         
@@ -125,7 +129,7 @@ final class ProfileViewController: UIViewController {
     
     @objc func logOut(){
         let alert = UIAlertController(title: "Пока-пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
-        let actionConfirm = UIAlertAction(title: " Да", style: .default) { [weak self]_ in
+        let actionConfirm = UIAlertAction(title: "Да", style: .default) { [weak self]_ in
             guard let self else {return}
             self.presenter?.logout()
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
@@ -142,7 +146,7 @@ extension ProfileViewController: ProfileViewProtocol {
     func updateProfileData(model: ProfileModel, avatarUrl: String) {
         
         self.userName.text = model.nameLabel
-        self.loginName.text = "@" + model.loginNameLabel
+        self.userLogin.text = "@" + model.loginNameLabel
         self.userDescription.text = model.descriptionLabel
         guard let url = URL(string: avatarUrl) else { return}
      let processor = RoundCornerImageProcessor(cornerRadius: 35)
