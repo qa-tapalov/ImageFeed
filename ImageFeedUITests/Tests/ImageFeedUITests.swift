@@ -35,6 +35,7 @@ class ImageFeedUITests: BaseClass {
         uiElements.fullImage.pinch(withScale: 3, velocity: 1)
         uiElements.fullImage.pinch(withScale: 0.5, velocity: -1)
         uiElements.buttonNavBack.tap()
+        uiElements.firstImage.checkElementExist()
     }
     
     func test_Profile(){

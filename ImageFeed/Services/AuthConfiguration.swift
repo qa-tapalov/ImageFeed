@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Constants {
+enum Constants {
     static let appId = "561502"
     static let accessKey = "tdhj5eEkvMzTWFFJOtv3dTFP-fbjdp6DB9jw-CG25cY"
     static let secretKey = "MWSB9yECW-_Dz47_Stojyw16yEYEleYX7_MT8dxcfhs"
@@ -30,7 +30,12 @@ struct AuthConfiguration {
     let defaultBaseUrl: String
     let authUrlString: String
     
-    init(accessKey: String, secretKey: String, redirectUri: String, accessScope: String, defaultBaseUrl: String, authUrlString: String) {
+    init(accessKey: String,
+         secretKey: String,
+         redirectUri: String,
+         accessScope: String,
+         defaultBaseUrl: String,
+         authUrlString: String) {
         self.accessKey = accessKey
         self.secretKey = secretKey
         self.redirectUri = redirectUri

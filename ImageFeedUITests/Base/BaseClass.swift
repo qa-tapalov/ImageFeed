@@ -11,6 +11,7 @@ class BaseClass: XCTestCase {
     let app = XCUIApplication()
     
     override func setUp() {
+        app.launchArguments = ["testMode"]
         app.launch()
     }
     
@@ -19,7 +20,7 @@ class BaseClass: XCTestCase {
     }
 }
 
-struct Constants {
+enum Constants {
     static let userEmail = ""
     static let password = ""
     static let delay: Double = 5.0

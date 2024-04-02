@@ -13,7 +13,7 @@ protocol ImagesListViewProtocol: AnyObject {
     func hideActivityIndicator()
 }
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     
     //MARK: - Private properties
     private let tableView = UITableView()
@@ -76,8 +76,11 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row + 1 == photos.count {
-            presenter?.fetchPhotos()
+        let testMode = ProcessInfo.processInfo.arguments.contains("testMode")
+        if !testMode {
+            if indexPath.row + 1 == photos.count {
+                presenter?.fetchPhotos()
+            }
         }
     }
 }

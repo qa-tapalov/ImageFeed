@@ -12,7 +12,7 @@ protocol ProfilePresenterProtocol: AnyObject {
     func logout()
 }
 
-class ProfileViewPresenter: ProfilePresenterProtocol {
+final class ProfileViewPresenter: ProfilePresenterProtocol {
     
     weak var view: ProfileViewProtocol?
     private var profileImageServiceObserver: NSObjectProtocol?
