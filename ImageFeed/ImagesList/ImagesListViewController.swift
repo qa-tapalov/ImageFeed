@@ -7,21 +7,27 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+protocol ImagesListViewProtocol: AnyObject {
+    func updateTableViewAnimated()
+    func showActivityIndicator()
+    func hideActivityIndicator()
+}
+
+final class ImagesListViewController: UIViewController {
     
     //MARK: - Private properties
     private let tableView = UITableView()
-    private let photosName: [String] = Array(0..<20).map{"\($0)"}
     private var photos: [Photo] = []
     private let imagesListCell = ImagesListCell()
     private let imagesListService = ImagesListService.shared
-    private var imagesListServiceObserver: NSObjectProtocol?
+    
+    var presenter: ImagesListViewPresenterProtocol?
     //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        ImagesListService.shared.fetchPhotosNextPage()
+        presenter = ImagesListViewPresenter(view: self)
+        presenter?.fetchPhotos()
         setupViews()
-        addObserver()
     }
     
     private func setupViews(){
@@ -37,6 +43,7 @@ class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
+        tableView.accessibilityIdentifier = "TableImagesList"
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -45,33 +52,6 @@ class ImagesListViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-    }
-    
-    private func addObserver(){
-        imagesListServiceObserver = NotificationCenter.default    // 2
-            .addObserver(
-                forName: ImagesListService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self else { return }
-                
-                self.updateTableViewAnimated()
-            }
-    }
-    
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        photos = imagesListService.photos
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
-        }
     }
 }
 
@@ -96,8 +76,11 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row + 1 == photos.count {
-            ImagesListService.shared.fetchPhotosNextPage()
+        let testMode = ProcessInfo.processInfo.arguments.contains("testMode")
+        if !testMode {
+            if indexPath.row + 1 == photos.count {
+                presenter?.fetchPhotos()
+            }
         }
     }
 }
@@ -129,20 +112,31 @@ extension ImagesListViewController: ImagesListCellDelegate {
     func imagesListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else {return}
         let photo = imagesListService.photos[indexPath.row]
-        UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let newPhoto):
-                    cell.setIsliked(isLiked: newPhoto.isLiked)
-                    UIBlockingProgressHUD.dismiss()
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    UIBlockingProgressHUD.dismiss()
+        presenter?.changeLike(photoId: photo.id, isLike: photo.isLiked, cell: cell)
+    }
+}
+
+extension ImagesListViewController: ImagesListViewProtocol {
+    func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imagesListService.photos.count
+        photos = imagesListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
                 }
-            }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
         }
     }
+    func showActivityIndicator() {
+        UIBlockingProgressHUD.show()
+    }
     
+    func hideActivityIndicator() {
+        UIBlockingProgressHUD.dismiss()
+    }
+
 }
 

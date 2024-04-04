@@ -7,7 +7,12 @@
 
 import Foundation
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol: AnyObject {
+    func changeLike(photoId: String, isLike: Bool, complition: @escaping (Result<Photo, Error>) -> Void)
+    func fetchPhotosNextPage()
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     private var lastLoadedPage = 0
     private var task: URLSessionTask?
     static var shared = ImagesListService()
@@ -43,6 +48,7 @@ final class ImagesListService {
                 }
             }
         }
+        self.task = task
         task.resume()
     }
     
